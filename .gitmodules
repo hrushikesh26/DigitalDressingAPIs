@@ -1,0 +1,9 @@
+[submodule "U-2-Net"]
+	path = U-2-Net
+	url = https://github.com/hrushikesh26/U-2-Net.git
+[submodule "ACGPN"]
+	path = ACGPN
+	url = https://github.com/hrushikesh26/ACGPN.git
+[submodule "Self-Correction-Human-Parsing-for-ACGPN"]
+	path = Self-Correction-Human-Parsing-for-ACGPN
+	url = https://github.com/hrushikesh26/Self-Correction-Human-Parsing-for-ACGPN.git
