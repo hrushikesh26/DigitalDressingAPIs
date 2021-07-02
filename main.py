@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_ngrok import run_with_ngrok
 import os
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -12,6 +13,7 @@ from predict_pose import generate_pose_keypoints
 import u2net_run
 import u2net_load
 app = Flask(__name__)
+run_with_ngrok(app) 
 # app.config["DEBUG"] = True
 app.config['CLOTH_DIR'] = 'inputs/cloth'
 app.config['IMG_DIR'] = 'inputs/img'
