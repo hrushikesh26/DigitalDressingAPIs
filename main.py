@@ -70,7 +70,7 @@ def dress_the_user():
     TODO Below part has been commented for testing without GPU
     TODO Uncomment it before final test
     """
-    u2net = u2net_load.model(model_name = 'u2netp')
+    u2net = u2net_load.model(model_name = 'U-2-Net/u2netp')
     u2net_run.infer(u2net, 'ACGPN/Data_preprocessing/test_color','ACGPN/Data_preprocessing/test_edge')
     """
     * Save user image and create test_pose and test_label
