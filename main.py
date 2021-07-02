@@ -70,8 +70,8 @@ def dress_the_user():
     TODO Below part has been commented for testing without GPU
     TODO Uncomment it before final test
     """
-    # u2net = u2net_load.model(model_name = 'u2netp')
-    # u2net_run.infer(u2net, 'ACGPN/Data_preprocessing/test_color','ACGPN/Data_preprocessing/test_edge')
+    u2net = u2net_load.model(model_name = 'u2netp')
+    u2net_run.infer(u2net, 'ACGPN/Data_preprocessing/test_color','ACGPN/Data_preprocessing/test_edge')
     """
     * Save user image and create test_pose and test_label
     """
@@ -87,7 +87,7 @@ def dress_the_user():
     TODO: Next line gives cuda error on cpu 
     TODO: Remove comment from next line while testing on gpu colab
     """
-    # os.system("python Self-Correction-Human-Parsing-for-ACGPN/simple_extractor.py --dataset 'lip' --model-restore 'lip_final.pth' --input-dir 'Data_preprocessing/test_img' --output-dir 'Data_preprocessing/test_label'")
+    os.system("python Self-Correction-Human-Parsing-for-ACGPN/simple_extractor.py --dataset 'lip' --model-restore 'U-2-Net/lip_final.pth' --input-dir 'ACGPN/Data_preprocessing/test_img' --output-dir 'ACGPN/Data_preprocessing/test_label'")
 
     pose_path = os.path.join('ACGPN/Data_preprocessing/test_pose', img_name.replace('.jpg', '_keypoints.json'))
     # TODO: next line gives some unkown error. 
