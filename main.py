@@ -87,7 +87,7 @@ def dress_the_user():
     TODO: Next line gives cuda error on cpu 
     TODO: Remove comment from next line while testing on gpu colab
     """
-    os.system("python Self-Correction-Human-Parsing-for-ACGPN/simple_extractor.py --dataset 'lip' --model-restore 'U-2-Net/lip_final.pth' --input-dir 'ACGPN/Data_preprocessing/test_img' --output-dir 'ACGPN/Data_preprocessing/test_label'")
+    os.system("python Self-Correction-Human-Parsing-for-ACGPN/simple_extractor.py --dataset 'lip' --model-restore 'Self-Correction-Human-Parsing-for-ACGPN/lip_final.pth' --input-dir 'ACGPN/Data_preprocessing/test_img' --output-dir 'ACGPN/Data_preprocessing/test_label'")
 
     pose_path = os.path.join('ACGPN/Data_preprocessing/test_pose', img_name.replace('.jpg', '_keypoints.json'))
     # TODO: next line gives some unkown error. 
