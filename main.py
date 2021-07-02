@@ -90,7 +90,13 @@ def dress_the_user():
     pose_path = os.path.join('ACGPN/Data_preprocessing/test_pose', img_name.replace('.jpg', '_keypoints.json'))
     # TODO: next line gives some unkown error. 
     # TODO: Check after removeing all previous errors
-    generate_pose_keypoints(img_path, pose_path)
+    # generate_pose_keypoints(img_path, pose_path)
+
+    with open('ACGPN/Data_preprocessing/test_pairs.txt','w') as f:
+        inference_name =img_name+" "+cloth_name 
+        f.write(inference_name)
+
+    # os.system('python ACGPN/test.py')
 
 
 
