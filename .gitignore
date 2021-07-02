@@ -1,1 +1,7 @@
 env/
+External files/
+saved_models/
+inputs/
+ACGPN/Data_preprocessing
+U-2-Net/u2netp.pth
+U-2-Net/u2net.pth
