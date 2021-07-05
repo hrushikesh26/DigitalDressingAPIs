@@ -98,7 +98,7 @@ def dress_the_user():
         inference_name =img_name+" "+cloth_name 
         f.write(inference_name)
 
-    # os.system('python ACGPN/test.py')
+    os.system('python ACGPN/test.py')
 
 
 
