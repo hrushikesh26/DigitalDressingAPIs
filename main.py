@@ -70,7 +70,7 @@ def dress_the_user():
     TODO Below part has been commented for testing without GPU
     TODO Uncomment it before final test
     """
-    u2net = u2net_load.model(model_name = 'U-2-Net/u2netp')
+    u2net = u2net_load.model(model_name = 'u2netp')
     u2net_run.infer(u2net, 'ACGPN/Data_preprocessing/test_color','ACGPN/Data_preprocessing/test_edge')
     """
     * Save user image and create test_pose and test_label
@@ -92,7 +92,7 @@ def dress_the_user():
     pose_path = os.path.join('ACGPN/Data_preprocessing/test_pose', img_name.replace('.jpg', '_keypoints.json'))
     # TODO: next line gives some unkown error. 
     # TODO: Check after removeing all previous errors
-    # generate_pose_keypoints(img_path, pose_path)
+    generate_pose_keypoints(img_path, pose_path)
 
     with open('ACGPN/Data_preprocessing/test_pairs.txt','w') as f:
         inference_name =img_name+" "+cloth_name 
