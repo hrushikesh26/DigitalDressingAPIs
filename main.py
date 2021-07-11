@@ -212,7 +212,7 @@ def dress_the_user_2_0():
 
     output_dir = os.path.join(opt.results_dir, opt.phase)
     fake_image_dir = os.path.join(output_dir, 'try-on')
-    filepath = os.path.join(fake_image_dir,  'userImage.jpg')
+    filepath = os.path.join(fake_image_dir, 'userImage.jpg')
 
     img = Image.open(filepath, mode='r')
     rawBytes = io.BytesIO()
