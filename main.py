@@ -115,7 +115,7 @@ def dress_the_user():
 
 
 @app.route('/api/dress_the_user2_0', methods=['POST'])
-def dress_the_user_2.0():
+def dress_the_user_2_0():
     """ 
     *save files in "input" directory
     """
