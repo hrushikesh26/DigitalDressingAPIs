@@ -202,6 +202,7 @@ def dress_the_user_2.0():
     try:
         os.rmdir(output_dir)
     except OSError as error:
+        print("os Error")
         pass
     os.system('python ACGPN/test.py')
 
