@@ -13,12 +13,15 @@ from PIL import Image
 import json
 import pathlib
 import u2net_load
+
+from ACGPN.options.test_options import TestOptions
 import u2net_run
 app = Flask(__name__)
 run_with_ngrok(app)
 # app.config["DEBUG"] = True
 app.config['CLOTH_DIR'] = 'inputs/cloth'
 app.config['IMG_DIR'] = 'inputs/img'
+opt = TestOptions().parse()
 
 
 @app.route('/api', methods=['GET'])
