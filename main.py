@@ -114,7 +114,7 @@ def dress_the_user():
     return(jsonify({"Success": "Correct keys"}))
 
 
-@app.route('/api/dress_the_user2.0', methods=['POST'])
+@app.route('/api/dress_the_user2_0', methods=['POST'])
 def dress_the_user_2.0():
     """ 
     *save files in "input" directory
