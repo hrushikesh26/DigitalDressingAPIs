@@ -1,5 +1,8 @@
-import u2net_load
-import u2net_run
+
+import sys
+sys.path.insert(0, 'U-2-Net')
+sys.path.insert(0, 'Self-Correction-Human-Parsing-for-ACGPN')
+sys.path.insert(0, 'ACGPN')
 from predict_pose import generate_pose_keypoints
 from flask import Flask, request, jsonify
 from flask_ngrok import run_with_ngrok
@@ -9,10 +12,8 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 import json
 import pathlib
-import sys
-sys.path.insert(0, 'U-2-Net')
-sys.path.insert(0, 'Self-Correction-Human-Parsing-for-ACGPN')
-sys.path.insert(0, 'ACGPN')
+import u2net_load
+import u2net_run
 app = Flask(__name__)
 run_with_ngrok(app)
 # app.config["DEBUG"] = True
