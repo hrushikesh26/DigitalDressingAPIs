@@ -224,6 +224,12 @@ def dress_the_user_2_0():
                     "Image": img_base64.decode('ascii')}))
 
 
+@app.route('/api/generate_poseandlabel')
+def generate_poseandlabel():
+    uid = "UID: "+request.form['uid'] 
+    print(uid)
+    return uid
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
