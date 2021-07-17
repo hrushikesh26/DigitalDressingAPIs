@@ -257,7 +257,7 @@ def generate_poseandlabel():
         'ACGPN/Data_preprocessing/test_label').mkdir(parents=True, exist_ok=True)
     # * Resize and copy image in test_img
     img_name = uid+'.jpg'
-    img_path = os.path.join(pp.config['IMG_DIR'], img_name)  # .replace(".png",".jpg")
+    img_path = os.path.join(app.config['IMG_DIR'], img_name)  # .replace(".png",".jpg")
     img = Image.open(img_path)
     img = img.resize((192, 256), Image.BICUBIC)
     img_path = os.path.join('ACGPN/Data_preprocessing/test_img', img_name)
