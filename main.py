@@ -234,6 +234,9 @@ def tryon():
 
     os.system('python ACGPN/test.py')
 
+    result_img_path = "results/test/try-on/"+user_imagename
+    cloud_image_path = "tryon_results/"+user_imagename.replace(".jpg","")+clothname
+    storage.child(cloud_image_path).put(result_img_path)
 
     return jsonify({"Status": "Successful"})
 
