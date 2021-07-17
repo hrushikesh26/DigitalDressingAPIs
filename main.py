@@ -13,6 +13,12 @@ from PIL import Image
 import json
 import pathlib
 import u2net_load
+import datetime
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import storage
+import pyrebase
+
 
 from ACGPN.options.test_options import TestOptions
 import u2net_run
@@ -21,7 +27,17 @@ run_with_ngrok(app)
 # app.config["DEBUG"] = True
 app.config['CLOTH_DIR'] = 'inputs/cloth'
 app.config['IMG_DIR'] = 'inputs/img'
-opt = TestOptions().parse()
+firebaseConfig = {
+    "apiKey": "AIzaSyC1fZtfInnwm0yf93g46_50Tv9hX7v0dG4",
+    "authDomain": "oose-d997d.firebaseapp.com",
+    "databaseURL": "https://oose-d997d-default-rtdb.firebaseio.com",
+    "projectId": "oose-d997d",
+    "storageBucket": "oose-d997d.appspot.com",
+    "messagingSenderId": "882019773220",
+    "appId": "1:882019773220:web:f59ae8a9fe3b8c990ce1b1",
+    "measurementId": "G-5XKXV8MBH9"
+  }
+# opt = TestOptions().parse()
 
 
 @app.route('/api', methods=['GET'])
@@ -89,7 +105,7 @@ def dress_the_user():
     """
     * Save user image and create test_pose and test_label
     """
-    import os
+    # import os
     img_name = 'userImage.jpg'
     img_path = os.path.join('inputs/img', img_name)  # .replace(".png",".jpg")
     img = Image.open(img_path)
@@ -98,15 +114,15 @@ def dress_the_user():
     img.save(img_path)
 
     """
-    TODO: Next line gives cuda error on cpu 
-    TODO: Remove comment from next line while testing on gpu colab
+    TODO: Next line gives cuda error on cpu  ==> DONE
+    TODO: Remove comment from next line while testing on gpu colab ==> DONE
     """
     os.system("python Self-Correction-Human-Parsing-for-ACGPN/simple_extractor.py --dataset 'lip' --model-restore 'Self-Correction-Human-Parsing-for-ACGPN/lip_final.pth' --input-dir 'ACGPN/Data_preprocessing/test_img' --output-dir 'ACGPN/Data_preprocessing/test_label'")
 
     pose_path = os.path.join(
         'ACGPN/Data_preprocessing/test_pose', img_name.replace('.jpg', '_keypoints.json'))
-    # TODO: next line gives some unkown error.
-    # TODO: Check after removeing all previous errors
+    # TODO: next line gives some unkown error.  ==> DONE
+    # TODO: Check after removeing all previous errors ==> DONE
     generate_pose_keypoints(img_path, pose_path)
 
     with open('ACGPN/Data_preprocessing/test_pairs.txt', 'w') as f:
@@ -226,9 +242,45 @@ def dress_the_user_2_0():
 
 @app.route('/api/generate_poseandlabel')
 def generate_poseandlabel():
-    uid = "UID: "+request.form['uid'] 
-    print(uid)
-    return uid
+    uid = request.args['uid'] 
+
+    # *Download image from firebase at IMG_DIR
+    firebase_storage = pyrebase.initialize_app(firebaseConfig)
+    storage = firebase_storage.storage()
+    pathlib.Path(app.config['IMG_DIR']).mkdir(parents=True, exist_ok=True)
+    filepath = os.path.join(app.config['IMG_DIR'],uid+".jpg")
+    storage.child("user_images/"+uid+".jpg").download(".",filepath)
+    # *create pose and label directories if not present
+    pathlib.Path(
+        'ACGPN/Data_preprocessing/test_pose').mkdir(parents=True, exist_ok=True)
+    pathlib.Path(
+        'ACGPN/Data_preprocessing/test_label').mkdir(parents=True, exist_ok=True)
+    # * Resize and copy image in test_img
+    img_name = uid+'.jpg'
+    img_path = os.path.join(pp.config['IMG_DIR'], img_name)  # .replace(".png",".jpg")
+    img = Image.open(img_path)
+    img = img.resize((192, 256), Image.BICUBIC)
+    img_path = os.path.join('ACGPN/Data_preprocessing/test_img', img_name)
+    img.save(img_path)
+
+    # * Generate label test_label
+    os.system("python Self-Correction-Human-Parsing-for-ACGPN/simple_extractor.py --dataset 'lip' --model-restore 'Self-Correction-Human-Parsing-for-ACGPN/lip_final.pth' --input-dir 'ACGPN/Data_preprocessing/test_img' --output-dir 'ACGPN/Data_preprocessing/test_label'")
+    # * Generate pose and save at test_pose
+    poseFilename = img_name.replace('.jpg', '_keypoints.json')
+    pose_path = os.path.join(
+        'ACGPN/Data_preprocessing/test_pose', poseFilename)
+    generate_pose_keypoints(img_path, pose_path)
+
+    # *upload pose and label to firebase
+    poseFilepath = os.path.join("ACGPN/Data_preprocessing/test_pose/",poseFilename)
+    storage.child('user_pose/'+poseFilename).put(poseFilepath)
+
+    labelFilename= uid+".png"
+    labelFilepath = os.path.join("ACGPN/Data_preprocessing/test_label/",labelFilename)
+    storage.child('user_label/'+labelFilename).put(labelFilepath)
+
+
+    return jsonify({"Status": "Success"})
 
 if __name__ == '__main__':
     app.debug = True
