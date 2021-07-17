@@ -17,7 +17,7 @@ import datetime
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import storage
-import pyrebase
+from firebase import Firebase
 
 
 from ACGPN.options.test_options import TestOptions
@@ -39,7 +39,8 @@ firebaseConfig = {
     "serviceAccount": "oose-d997d-firebase-adminsdk-mv4cw-6965bee3db.json"
   }
 opt = TestOptions().parse()
-
+firebase = Firebase(firebaseConfig)
+storage = firebase.storage()
 
 @app.route('/api', methods=['GET'])
 def home():
@@ -141,11 +142,11 @@ def generate_poseandlabel():
     uid = request.args['uid'] 
 
     # *Download image from firebase at IMG_DIR
-    firebase_storage = pyrebase.initialize_app(firebaseConfig)
-    storage = firebase_storage.storage()
+    # firebase_storage = pyrebase.initialize_app(firebaseConfig)
+    # storage = firebase_storage.storage()
     pathlib.Path(app.config['IMG_DIR']).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(app.config['IMG_DIR'],uid+".jpg")
-    storage.child("user_images/"+uid+".jpg").download(".",filepath)
+    storage.child("user_images/"+uid+".jpg").download(filepath)
     # *create pose and label directories if not present
     pathlib.Path(
         'ACGPN/Data_preprocessing/test_pose').mkdir(parents=True, exist_ok=True)
@@ -189,17 +190,17 @@ def tryon():
     
         
     # *Download image from firebase at CLOTH_DIR
-    firebase_storage = pyrebase.initialize_app(firebaseConfig)
-    storage = firebase_storage.storage()
+    # firebase = Firebase(firebaseConfig)
+    # storage = firebase.storage()
     pathlib.Path(app.config['CLOTH_DIR']).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(app.config['CLOTH_DIR'],clothname+".jpg")
-    storage.child("cloth_images/"+uid+".jpg").download(".",filepath)
+    storage.child("cloth_images/"+uid+".jpg").download(filepath)
 
 
 @app.route('/api/make_all_cloth_edges')
 def make_all_cloth_edges():
-    firebase_storage = pyrebase.initialize_app(firebaseConfig)
-    storage = firebase_storage.storage()
+    # firebase = Firebase(firebaseConfig)
+    # storage = firebase.storage()
     
     u2net = u2net_load.model(model_name='u2netp')
     u2net_run.infer(u2net, 'ACGPN/Data_preprocessing/test_color',
