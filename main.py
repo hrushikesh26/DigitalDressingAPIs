@@ -251,7 +251,7 @@ def make_all_cloth_edges():
     
     cloth_edge_arr = os.listdir('ACGPN/Data_preprocessing/test_edge')
     for file in cloth_edge_arr:
-        print(file)
+        print("Uploading..."+file)
         storage.child("cloth_edges/"+file).put('ACGPN/Data_preprocessing/test_edge/'+file)
     
     return "LOL"
