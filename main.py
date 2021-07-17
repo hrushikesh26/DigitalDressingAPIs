@@ -18,6 +18,7 @@ import datetime
 # from firebase_admin import credentials
 # from firebase_admin import storage
 from firebase import Firebase
+import test
 
 
 from ACGPN.options.test_options import TestOptions
@@ -200,7 +201,7 @@ def tryon():
     file_dir = "ACGPN/Data_preprocessing/test_img/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(file_dir,user_imagename)
-    storage.child("user_images/"+user_imagename.replace(".jpg","").download(filepath)
+    storage.child("user_images/"+user_imagename.replace(".jpg","")).download(filepath)
 
     # * Download cloth edge
     file_dir = "ACGPN/Data_preprocessing/test_edge/"
