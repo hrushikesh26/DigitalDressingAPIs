@@ -186,16 +186,47 @@ def generate_poseandlabel():
 @app.route('/api/tryon')
 def tryon():
     uid = request.args['uid'] 
-    clothname = request.args['clothname'] 
-    
-        
-    # *Download image from firebase at CLOTH_DIR
-    # firebase = Firebase(firebaseConfig)
-    # storage = firebase.storage()
-    pathlib.Path(app.config['CLOTH_DIR']).mkdir(parents=True, exist_ok=True)
-    filepath = os.path.join(app.config['CLOTH_DIR'],clothname+".jpg")
-    storage.child("cloth_images/"+uid+".jpg").download(filepath)
+    clothname = request.args['clothname'] # ! In name.jpg format
+    user_imagename = uid+".jpg"
+    # *Download image from firebase at test_cloth
 
+    #*download cloth image
+    file_dir = "ACGPN/Data_preprocessing/test_color/"
+    pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    filepath = os.path.join(file_dir,clothname)
+    storage.child("cloth_images/"+clothname).download(filepath)
+
+    #*download user image
+    file_dir = "ACGPN/Data_preprocessing/test_img/"
+    pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    filepath = os.path.join(file_dir,user_imagename)
+    storage.child("user_images/"+user_imagename ).download(filepath)
+
+    # * Download cloth edge
+    file_dir = "ACGPN/Data_preprocessing/test_edge/"
+    pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    filepath = os.path.join(file_dir,clothname.replce(".jpg",".png"))
+    storage.child("cloth_edges/"+clothname.replce(".jpg",".png") ).download(filepath)
+
+    # * Download user pose
+    file_dir = "ACGPN/Data_preprocessing/test_pose/"
+    pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    filepath = os.path.join(file_dir,user_imagename.replce(".jpg","_keypoints.json"))
+    storage.child("user_pose/"+user_imagename.replce(".jpg","_keypoints.json")).download(filepath)
+
+    # * Download user label
+    file_dir = "ACGPN/Data_preprocessing/test_label/"
+    pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    filepath = os.path.join(file_dir,user_imagename.replce(".jpg",".png"))
+    storage.child("user_label/"+user_imagename.replce(".jpg",".png")).download(filepath)
+    
+    
+    file_dir = "ACGPN/Data_preprocessing/test_mask/"
+    pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    file_dir = "ACGPN/Data_preprocessing/test_colormask/"
+    pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+
+    return jsonify({"Status": "Successful"})
 
 @app.route('/api/make_all_cloth_edges')
 def make_all_cloth_edges():
