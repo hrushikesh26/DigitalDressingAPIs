@@ -35,7 +35,8 @@ firebaseConfig = {
     "storageBucket": "oose-d997d.appspot.com",
     "messagingSenderId": "882019773220",
     "appId": "1:882019773220:web:f59ae8a9fe3b8c990ce1b1",
-    "measurementId": "G-5XKXV8MBH9"
+    "measurementId": "G-5XKXV8MBH9",
+    "serviceAccount": "oose-d997d-firebase-adminsdk-mv4cw-6965bee3db.json"
   }
 opt = TestOptions().parse()
 
@@ -134,111 +135,6 @@ def dress_the_user():
     return(jsonify({"Success": "Correct keys"}))
 
 
-@app.route('/api/dress_the_user2_0', methods=['POST'])
-def dress_the_user_2_0():
-    """ 
-    *save files in "input" directory
-    """
-    files_dict = request.files.to_dict()
-    for key in files_dict.keys():
-        if(key == "user"):
-            file = files_dict[key]
-            filename = secure_filename(file.filename)
-            pathlib.Path(app.config['IMG_DIR']).mkdir(
-                parents=True, exist_ok=True)
-            file.save(pathlib.Path(
-                app.config['IMG_DIR']).joinpath('userImage.jpg'))
-        elif(key == "dress"):
-            file = files_dict[key]
-            filename = secure_filename(file.filename)
-            pathlib.Path(app.config['CLOTH_DIR']).mkdir(
-                parents=True, exist_ok=True)
-            file.save(pathlib.Path(
-                app.config['CLOTH_DIR']).joinpath('cloth.jpg'))
-        else:
-            print(key)
-            return(jsonify({"Status": "Invalid keys"}))
-    # create required directories
-    pathlib.Path(
-        'ACGPN/Data_preprocessing/test_color').mkdir(parents=True, exist_ok=True)
-    pathlib.Path(
-        'ACGPN/Data_preprocessing/test_img').mkdir(parents=True, exist_ok=True)
-    pathlib.Path(
-        'ACGPN/Data_preprocessing/test_pose').mkdir(parents=True, exist_ok=True)
-    pathlib.Path(
-        'ACGPN/Data_preprocessing/test_colormask').mkdir(parents=True, exist_ok=True)
-    pathlib.Path(
-        'ACGPN/Data_preprocessing/test_label').mkdir(parents=True, exist_ok=True)
-    pathlib.Path(
-        'ACGPN/Data_preprocessing/test_edge').mkdir(parents=True, exist_ok=True)
-    pathlib.Path(
-        'ACGPN/Data_preprocessing/test_mask').mkdir(parents=True, exist_ok=True)
-
-    """
-    * Save dress image and create test_edge
-    """
-    cloth_name = 'cloth.jpg'
-    cloth_path = pathlib.Path(app.config['CLOTH_DIR']).joinpath(cloth_name)
-    cloth = Image.open(cloth_path)
-    cloth = cloth.resize((192, 256), Image.BICUBIC).convert('RGB')
-    cloth.save(pathlib.Path(
-        'ACGPN/Data_preprocessing/test_color').joinpath(cloth_name))
-
-    """
-    TODO Below part has been commented for testing without GPU
-    TODO Uncomment it before final test
-    """
-    u2net = u2net_load.model(model_name='u2netp')
-    u2net_run.infer(u2net, 'ACGPN/Data_preprocessing/test_color',
-                    'ACGPN/Data_preprocessing/test_edge')
-    """
-    * Save user image and create test_pose and test_label
-    """
-    import os
-    img_name = 'userImage.jpg'
-    img_path = os.path.join('inputs/img', img_name)  # .replace(".png",".jpg")
-    img = Image.open(img_path)
-    img = img.resize((192, 256), Image.BICUBIC)
-    img_path = os.path.join('ACGPN/Data_preprocessing/test_img', img_name)
-    img.save(img_path)
-
-    """
-    TODO: Next line gives cuda error on cpu 
-    TODO: Remove comment from next line while testing on gpu colab
-    """
-    os.system("python Self-Correction-Human-Parsing-for-ACGPN/simple_extractor.py --dataset 'lip' --model-restore 'Self-Correction-Human-Parsing-for-ACGPN/lip_final.pth' --input-dir 'ACGPN/Data_preprocessing/test_img' --output-dir 'ACGPN/Data_preprocessing/test_label'")
-
-    pose_path = os.path.join(
-        'ACGPN/Data_preprocessing/test_pose', img_name.replace('.jpg', '_keypoints.json'))
-    # TODO: next line gives some unkown error.
-    # TODO: Check after removeing all previous errors
-    generate_pose_keypoints(img_path, pose_path)
-
-    with open('ACGPN/Data_preprocessing/test_pairs.txt', 'w') as f:
-        inference_name = img_name+" "+cloth_name
-        f.write(inference_name)
-
-    output_dir = os.path.join(opt.results_dir, opt.phase)
-    try:
-        os.rmdir(output_dir)
-    except OSError as error:
-        print("os Error")
-        pass
-    os.system('python ACGPN/test.py')
-
-    output_dir = os.path.join(opt.results_dir, opt.phase)
-    fake_image_dir = os.path.join(output_dir, 'try-on')
-    filepath = os.path.join(fake_image_dir, 'userImage.jpg')
-
-    img = Image.open(filepath, mode='r')
-    rawBytes = io.BytesIO()
-    img.save(rawBytes, "JPEG")
-    img_base64 = base64.b64encode(rawBytes.getvalue())
-    # return jsonify({'image': img_base64.decode('ascii')})
-
-    return(jsonify({"Status": "Success",
-                    "Image": img_base64.decode('ascii')}))
-
 
 @app.route('/api/generate_poseandlabel')
 def generate_poseandlabel():
@@ -249,7 +145,7 @@ def generate_poseandlabel():
     storage = firebase_storage.storage()
     pathlib.Path(app.config['IMG_DIR']).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(app.config['IMG_DIR'],uid+".jpg")
-    storage.child("user_images/"+uid).download(".",filepath)
+    storage.child("user_images/"+uid+".jpg").download(".",filepath)
     # *create pose and label directories if not present
     pathlib.Path(
         'ACGPN/Data_preprocessing/test_pose').mkdir(parents=True, exist_ok=True)
@@ -284,6 +180,41 @@ def generate_poseandlabel():
 
 
     return jsonify({"Status": "Success"})
+
+
+@app.route('/api/tryon')
+def tryon():
+    uid = request.args['uid'] 
+    clothname = request.args['clothname'] 
+    
+        
+    # *Download image from firebase at CLOTH_DIR
+    firebase_storage = pyrebase.initialize_app(firebaseConfig)
+    storage = firebase_storage.storage()
+    pathlib.Path(app.config['CLOTH_DIR']).mkdir(parents=True, exist_ok=True)
+    filepath = os.path.join(app.config['CLOTH_DIR'],clothname+".jpg")
+    storage.child("cloth_images/"+uid+".jpg").download(".",filepath)
+
+
+@app.route('/api/make_all_cloth_edges')
+def make_all_cloth_edges():
+    firebase_storage = pyrebase.initialize_app(firebaseConfig)
+    storage = firebase_storage.storage()
+    
+    u2net = u2net_load.model(model_name='u2netp')
+    u2net_run.infer(u2net, 'ACGPN/Data_preprocessing/test_color',
+                    'ACGPN/Data_preprocessing/test_edge')
+    
+    cloth_edge_arr = os.listdir('ACGPN/Data_preprocessing/test_edge')
+    for file in cloth_edge_arr:
+        print(file)
+        storage.child("cloth_edges/"+file).put('ACGPN/Data_preprocessing/test_edge'+file)
+
+
+
+    
+    return "LOL"
+
 
 if __name__ == '__main__':
     app.debug = True
