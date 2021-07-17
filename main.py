@@ -146,7 +146,7 @@ def generate_poseandlabel():
     # storage = firebase_storage.storage()
     pathlib.Path(app.config['IMG_DIR']).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(app.config['IMG_DIR'],uid+".jpg")
-    storage.child("user_images/"+uid+".jpg").download(filepath)
+    storage.child("user_images/"+uid).download(filepath)
     # *create pose and label directories if not present
     pathlib.Path(
         'ACGPN/Data_preprocessing/test_pose').mkdir(parents=True, exist_ok=True)
@@ -209,10 +209,7 @@ def make_all_cloth_edges():
     cloth_edge_arr = os.listdir('ACGPN/Data_preprocessing/test_edge')
     for file in cloth_edge_arr:
         print(file)
-        storage.child("cloth_edges/"+file).put('ACGPN/Data_preprocessing/test_edge'+file)
-
-
-
+        storage.child("cloth_edges/"+file).put('ACGPN/Data_preprocessing/test_edge/'+file)
     
     return "LOL"
 
