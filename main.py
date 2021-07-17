@@ -200,31 +200,39 @@ def tryon():
     file_dir = "ACGPN/Data_preprocessing/test_img/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(file_dir,user_imagename)
-    storage.child("user_images/"+user_imagename ).download(filepath)
+    storage.child("user_images/"+user_imagename.replace(".jpg","").download(filepath)
 
     # * Download cloth edge
     file_dir = "ACGPN/Data_preprocessing/test_edge/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
-    filepath = os.path.join(file_dir,clothname.replce(".jpg",".png"))
-    storage.child("cloth_edges/"+clothname.replce(".jpg",".png") ).download(filepath)
+    filepath = os.path.join(file_dir,clothname.replace(".jpg",".png"))
+    storage.child("cloth_edges/"+clothname.replace(".jpg",".png") ).download(filepath)
 
     # * Download user pose
     file_dir = "ACGPN/Data_preprocessing/test_pose/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
-    filepath = os.path.join(file_dir,user_imagename.replce(".jpg","_keypoints.json"))
-    storage.child("user_pose/"+user_imagename.replce(".jpg","_keypoints.json")).download(filepath)
+    filepath = os.path.join(file_dir,user_imagename.replace(".jpg","_keypoints.json"))
+    storage.child("user_pose/"+user_imagename.replace(".jpg","_keypoints.json")).download(filepath)
 
     # * Download user label
     file_dir = "ACGPN/Data_preprocessing/test_label/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
-    filepath = os.path.join(file_dir,user_imagename.replce(".jpg",".png"))
-    storage.child("user_label/"+user_imagename.replce(".jpg",".png")).download(filepath)
+    filepath = os.path.join(file_dir,user_imagename.replace(".jpg",".png"))
+    storage.child("user_label/"+user_imagename.replace(".jpg",".png")).download(filepath)
     
     
     file_dir = "ACGPN/Data_preprocessing/test_mask/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
     file_dir = "ACGPN/Data_preprocessing/test_colormask/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+
+    # * Write test_pairs.txt file
+    with open('ACGPN/Data_preprocessing/test_pairs.txt', 'w') as f:
+        inference_name = user_imagename+" "+clothname
+        f.write(inference_name)
+
+    os.system('python ACGPN/test.py')
+
 
     return jsonify({"Status": "Successful"})
 
