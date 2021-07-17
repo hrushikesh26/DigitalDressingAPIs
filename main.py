@@ -14,9 +14,9 @@ import json
 import pathlib
 import u2net_load
 import datetime
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import storage
+# import firebase_admin
+# from firebase_admin import credentials
+# from firebase_admin import storage
 from firebase import Firebase
 
 
