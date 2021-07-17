@@ -37,7 +37,7 @@ firebaseConfig = {
     "appId": "1:882019773220:web:f59ae8a9fe3b8c990ce1b1",
     "measurementId": "G-5XKXV8MBH9"
   }
-# opt = TestOptions().parse()
+opt = TestOptions().parse()
 
 
 @app.route('/api', methods=['GET'])
