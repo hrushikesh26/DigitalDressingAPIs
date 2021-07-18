@@ -147,7 +147,7 @@ def generate_poseandlabel():
     # storage = firebase_storage.storage()
     pathlib.Path(app.config['IMG_DIR']).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(app.config['IMG_DIR'],uid+".jpg")
-    storage.child("user_images/"+uid).download(filepath)
+    storage.child("user_images/"+uid+".jpg").download(filepath)
     # *create pose and label directories if not present
     pathlib.Path(
         'ACGPN/Data_preprocessing/test_pose').mkdir(parents=True, exist_ok=True)
