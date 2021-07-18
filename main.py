@@ -259,4 +259,6 @@ def make_all_cloth_edges():
 
 if __name__ == '__main__':
     app.debug = True
-    app.run()
+    os.system('lt --port 5000 --subdomain digitaldressing >> url.txt 2>&1 &')
+    app.run(port="5000")
+
