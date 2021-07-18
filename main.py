@@ -5,7 +5,7 @@ sys.path.insert(0, 'Self-Correction-Human-Parsing-for-ACGPN')
 sys.path.insert(0, 'ACGPN')
 from predict_pose import generate_pose_keypoints
 from flask import Flask, request, jsonify
-from flask_ngrok import run_with_ngrok
+# from flask_ngrok import run_with_ngrok
 import os
 import io
 from werkzeug.utils import secure_filename
@@ -18,7 +18,6 @@ import datetime
 # from firebase_admin import credentials
 # from firebase_admin import storage
 from firebase import Firebase
-import test
 from flask_cors import CORS
 
 
@@ -28,7 +27,7 @@ app = Flask(__name__)
 
 CORS(app)
 
-run_with_ngrok(app)
+# run_with_ngrok(app)
 # app.config["DEBUG"] = True
 app.config['CLOTH_DIR'] = 'inputs/cloth'
 app.config['IMG_DIR'] = 'inputs/img'
@@ -197,30 +196,40 @@ def tryon():
 
     #*download cloth image
     file_dir = "ACGPN/Data_preprocessing/test_color/"
+    if pathlib.Path(file_dir).is_dir():
+        pathlib.Path(file_dir).rmdir()      # *Deleting files inside folder if any exist
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(file_dir,clothname)
     storage.child("cloth_images/"+clothname).download(filepath)
 
     #*download user image
     file_dir = "ACGPN/Data_preprocessing/test_img/"
+    if pathlib.Path(file_dir).is_dir():
+        pathlib.Path(file_dir).rmdir()      # *Deleting files inside folder if any exist
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(file_dir,user_imagename)
     storage.child("user_images/"+user_imagename).download(filepath)
 
     # * Download cloth edge
     file_dir = "ACGPN/Data_preprocessing/test_edge/"
+    if pathlib.Path(file_dir).is_dir():
+        pathlib.Path(file_dir).rmdir()      # *Deleting files inside folder if any exist
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(file_dir,clothname.replace(".jpg",".png"))
     storage.child("cloth_edges/"+clothname.replace(".jpg",".png") ).download(filepath)
 
     # * Download user pose
     file_dir = "ACGPN/Data_preprocessing/test_pose/"
+    if pathlib.Path(file_dir).is_dir():
+        pathlib.Path(file_dir).rmdir()      # *Deleting files inside folder if any exist
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(file_dir,user_imagename.replace(".jpg","_keypoints.json"))
     storage.child("user_pose/"+user_imagename.replace(".jpg","_keypoints.json")).download(filepath)
 
     # * Download user label
     file_dir = "ACGPN/Data_preprocessing/test_label/"
+    if pathlib.Path(file_dir).is_dir():
+        pathlib.Path(file_dir).rmdir()      # *Deleting files inside folder if any exist
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(file_dir,user_imagename.replace(".jpg",".png"))
     storage.child("user_label/"+user_imagename.replace(".jpg",".png")).download(filepath)
@@ -260,5 +269,5 @@ def make_all_cloth_edges():
 if __name__ == '__main__':
     app.debug = True
     os.system('lt --port 5000 --subdomain digitaldressing >> url.txt 2>&1 &')
-    app.run(port="5000")
+    app.run()
 
