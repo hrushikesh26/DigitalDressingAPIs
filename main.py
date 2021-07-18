@@ -19,11 +19,15 @@ import datetime
 # from firebase_admin import storage
 from firebase import Firebase
 import test
+from flask_cors import CORS
 
 
 from ACGPN.options.test_options import TestOptions
 import u2net_run
 app = Flask(__name__)
+
+CORS(app)
+
 run_with_ngrok(app)
 # app.config["DEBUG"] = True
 app.config['CLOTH_DIR'] = 'inputs/cloth'
@@ -138,7 +142,7 @@ def dress_the_user():
 
 
 
-@app.route('/api/generate_poseandlabel')
+@app.route('/api/generate_poseandlabel',methods=['GET'])
 def generate_poseandlabel():
     uid = request.args['uid'] 
 
