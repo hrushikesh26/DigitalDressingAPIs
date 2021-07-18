@@ -201,7 +201,7 @@ def tryon():
     file_dir = "ACGPN/Data_preprocessing/test_img/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
     filepath = os.path.join(file_dir,user_imagename)
-    storage.child("user_images/"+user_imagename.replace(".jpg","")).download(filepath)
+    storage.child("user_images/"+user_imagename).download(filepath)
 
     # * Download cloth edge
     file_dir = "ACGPN/Data_preprocessing/test_edge/"
@@ -238,23 +238,19 @@ def tryon():
     cloud_image_path = "tryon_results/"+user_imagename.replace(".jpg","")+clothname
     storage.child(cloud_image_path).put(result_img_path)
 
-    return jsonify({"Status": "Successful"})
+    return jsonify({"Status": "Success"})
 
 @app.route('/api/make_all_cloth_edges')
-def make_all_cloth_edges():
-    # firebase = Firebase(firebaseConfig)
-    # storage = firebase.storage()
-    
+def make_all_cloth_edges():    
     u2net = u2net_load.model(model_name='u2netp')
     u2net_run.infer(u2net, 'ACGPN/Data_preprocessing/test_color',
-                    'ACGPN/Data_preprocessing/test_edge')
-    
+                    'ACGPN/Data_preprocessing/test_edge')    
     cloth_edge_arr = os.listdir('ACGPN/Data_preprocessing/test_edge')
     for file in cloth_edge_arr:
         print("Uploading..."+file)
         storage.child("cloth_edges/"+file).put('ACGPN/Data_preprocessing/test_edge/'+file)
     
-    return "LOL"
+    return jsonify({"Status":"Success"})
 
 
 if __name__ == '__main__':
