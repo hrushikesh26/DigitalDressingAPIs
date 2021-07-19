@@ -21,10 +21,10 @@ from firebase import Firebase
 import test
 from flask_cors import CORS
 
-def delete_folder(pth) :
+def delete_folder_contents(pth) :
     for sub in pth.iterdir() :
         if sub.is_dir() :
-            delete_folder(sub)
+            delete_folder_contents(sub)
         else :
             sub.unlink()
 
