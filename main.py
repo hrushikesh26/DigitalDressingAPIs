@@ -21,6 +21,13 @@ from firebase import Firebase
 import test
 from flask_cors import CORS
 
+def delete_folder(pth) :
+    for sub in pth.iterdir() :
+        if sub.is_dir() :
+            delete_folder(sub)
+        else :
+            sub.unlink()
+
 
 from ACGPN.options.test_options import TestOptions
 import u2net_run
@@ -198,30 +205,35 @@ def tryon():
     #*download cloth image
     file_dir = "ACGPN/Data_preprocessing/test_color/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    delete_folder_contents(pathlib.Path(file_dir))
     filepath = os.path.join(file_dir,clothname)
     storage.child("cloth_images/"+clothname).download(filepath)
 
     #*download user image
     file_dir = "ACGPN/Data_preprocessing/test_img/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    delete_folder_contents(pathlib.Path(file_dir))
     filepath = os.path.join(file_dir,user_imagename)
     storage.child("user_images/"+user_imagename).download(filepath)
 
     # * Download cloth edge
     file_dir = "ACGPN/Data_preprocessing/test_edge/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    delete_folder_contents(pathlib.Path(file_dir))
     filepath = os.path.join(file_dir,clothname.replace(".jpg",".png"))
     storage.child("cloth_edges/"+clothname.replace(".jpg",".png") ).download(filepath)
 
     # * Download user pose
     file_dir = "ACGPN/Data_preprocessing/test_pose/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    delete_folder_contents(pathlib.Path(file_dir))
     filepath = os.path.join(file_dir,user_imagename.replace(".jpg","_keypoints.json"))
     storage.child("user_pose/"+user_imagename.replace(".jpg","_keypoints.json")).download(filepath)
 
     # * Download user label
     file_dir = "ACGPN/Data_preprocessing/test_label/"
     pathlib.Path(file_dir).mkdir(parents=True, exist_ok=True)
+    delete_folder_contents(pathlib.Path(file_dir))
     filepath = os.path.join(file_dir,user_imagename.replace(".jpg",".png"))
     storage.child("user_label/"+user_imagename.replace(".jpg",".png")).download(filepath)
     
